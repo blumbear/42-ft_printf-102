@@ -6,7 +6,7 @@
 #    By: ttaquet <ttaquet@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/16 16:02:49 by ttaquet           #+#    #+#              #
-#    Updated: 2023/10/23 11:47:30 by ttaquet          ###   ########.fr        #
+#    Updated: 2023/10/25 16:33:57 by ttaquet          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,36 +14,28 @@ NAME = libftprintf.a
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-OPTION = -I
-HEADER_FILE = libft.h
+OPTION = -c
+HEADER_FILE = ft_printf.h
 
-SRC = 
-
-SRC_BONUS = 
+SRC = ft_printf \
 
 SRCS = $(addsuffix .c,$(SRC))
 OBJ = $(addsuffix .o,$(SRC))
 
-SRCS_BONUS = $(addsuffix .c,$(SRC_BONUS))
-OBJ_BONUS = $(addsuffix .o,$(SRC_BONUS))
+all : $(NAME)
 
-all: $(NAME)
+$(NAME) : $(OBJ) 
+	ar -rcs $(NAME) $(OBJ) $(HEADER_FILE)
 
-bonus: $(OBJ_BONUS)
-	ar -rcs $(NAME) $(OBJ_BONUS) $(HEADER_FILE)
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJ)
-	rm -f $(OBJ_BONUS)
 
 fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re
-
-$(NAME): $(OBJ)
-	ar -rcs $(NAME) $(OBJ) $(HEADER_FILE)
-
-
+.PHONY: all clean fclean re 
