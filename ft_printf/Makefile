@@ -6,36 +6,37 @@
 #    By: ttaquet <ttaquet@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/16 16:02:49 by ttaquet           #+#    #+#              #
-#    Updated: 2023/10/25 16:33:57 by ttaquet          ###   ########.fr        #
+#    Updated: 2023/10/26 14:31:56 by ttaquet          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libftprintf.a
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
-OPTION = -c
-HEADER_FILE = ft_printf.h
+RM = rm -rf
+CFLAGS = -Wall -Wextra -Werror -Iinclude -Ilibft
 
-SRC = ft_printf \
+SRCS = ft_printf.c \
+	ft_nbr.c \
+	libft/ft_putnbr_fd.c \
+	libft/ft_putstr_fd.c \
+	libft/ft_putchar_fd.c \
+	libft/ft_strlen.c \
+	libft/ft_substr.c \
+	libft/ft_strdup.c \
 
-SRCS = $(addsuffix .c,$(SRC))
-OBJ = $(addsuffix .o,$(SRC))
+OBJS = $(SRCS:.c=.o)
 
-all : $(NAME)
+all: ${NAME}
 
-$(NAME) : $(OBJ) 
-	ar -rcs $(NAME) $(OBJ) $(HEADER_FILE)
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
+$(NAME): $(OBJS)
+	ar rcs $(NAME) $(OBJS)
 clean:
-	rm -f $(OBJ)
+	$(RM) $(OBJS)
 
 fclean: clean
-	rm -f $(NAME)
+	$(RM) $(NAME)
 
-re: fclean all
+re: fclean ${NAME}
 
-.PHONY: all clean fclean re 
+.PHONY: all, clean, fclean, re, libft

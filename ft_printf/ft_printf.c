@@ -6,85 +6,52 @@
 /*   By: ttaquet <ttaquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 11:48:16 by ttaquet           #+#    #+#             */
-/*   Updated: 2023/10/25 16:21:10 by ttaquet          ###   ########.fr       */
+/*   Updated: 2023/10/26 18:04:40 by ttaquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	get_strs_size(const char *str)
+int	print_args(char *str, char c )
 {
-	int	i;
+	int	tmp;
 
-	i = 0;
-	while (*str)
-	{
-		if(*str == '%')
-			i += 2;
-	}
-	return (i);
+	tmp = ft_strlen(str);
+	ft_putstr_fd(str, 1);
+	if (c != 's')
+		free(str);
+	return (tmp);
 }
 
-char	*char_to_str(char c)
+int	print_char(char c)
 {
-	char *res;
-
-	res = malloc(sizeof(char) * 2);
-	res[0] = c;
-	res[1] = '\0';
-	return (res);
+	ft_putchar_fd(c, 1);
+	return (1);
 }
 
-char	*get_args(va_list args, char c)
+int	get_args(va_list args, char c)
 {
 	if (c == 'c')
-		return (char_to_str(va_arg(args, int)));
+		return (print_char(va_arg(args, int)));
 	else if (c == 's')
-		return (va_arg(args, char *));
-	// else if (c == 'p')
-	// 	return (ft_ptr_address(va_arg(args, void *)));
-	else if (c == 'd')
-		return (ft_nbr_base(va_arg(args, int), "0123456789"));
-	else if (c == 'i')
-		return (ft_nbr_base(va_arg(args, int), "0123456789"));
-	else if (c == 'u')
-		return (ft_nbr_base(va_arg(args, int), "0123456789"));
+		return (print_args(va_arg(args, char *), c));
+	else if (c == 'p')
+		return (print_args(ft_ptr_address(va_arg(args, void *)), c));
+	else if (c == 'd' || c == 'i' || c == 'u')
+		return (print_args(ft_nbr_base(va_arg(args, int), "0123456789"), c));
 	else if (c == 'x')
-		return (ft_nbr_base(va_arg(args, int), "0123456789abcdef"));
+		return (print_args(ft_nbr_base(va_arg(args, int),
+					"0123456789abcdef"), c));
 	else if (c == 'X')
-		return (ft_nbr_base(va_arg(args, int), "0123456789ABCDEF"));
+		return (print_args(ft_nbr_base(va_arg(args, int),
+					"0123456789ABCEDF"), c));
 	else if (c == '%')
-		return ("%");
-	return (NULL);
-}
-
-char	**get_strs(const char *str, va_list args)
-{
-	int		i;
-	int		j;
-	char	**strs;
-
-	i = 0;
-	j = 0;
-	strs = (char **)malloc(sizeof(char *) * (get_strs_size(str) + 1));
-	while (str[i])
-	{
-		if (str[i] == '%')
-		{
-			strs[j++] = ft_substr(str, 0, i);
-			strs[j++] = get_args(args, str[i + 1]);
-			str += i + 2;
-		}
-		i++;
-	}
-	strs[j++] = ft_substr(str + i, 0, i);
-	strs[j] = NULL;
-	return (strs);
+		return (print_char(c));
+	return (0);
 }
 
 int	ft_printf(const char *str, ...)
 {
-	char	**strs;
 	va_list	args;
 	int		len;
 	int		i;
@@ -92,12 +59,24 @@ int	ft_printf(const char *str, ...)
 	va_start(args, str);
 	len = 0;
 	i = 0;
-	strs = get_strs(str, args);
-	while (strs[i])
+	while (str[i])
 	{
-		ft_putstr_fd(strs[i], 1);
-		len += ft_strlen(strs[i]);
-		free(strs[i++]);
+		if (str[i] == '%')
+		{
+			len += get_args(args, str[i + 1]);
+			i += 2;
+		}
+		if (str[i])
+		{
+			ft_putchar_fd(str[i], 1);
+			len++;
+			i++;
+		}
 	}
 	return (len);
 }
+// int main(){
+// // printf("size -> %d\n",ft_printf(" NULL %s NULL ", NULL));
+// printf("--------------\n");
+// printf("size -> %d",printf(" NULL %s NULL ", NULL));
+// }

@@ -6,26 +6,43 @@
 /*   By: ttaquet <ttaquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 11:48:43 by ttaquet           #+#    #+#             */
-/*   Updated: 2023/10/25 15:39:26 by ttaquet          ###   ########.fr       */
+/*   Updated: 2023/10/26 18:09:50 by ttaquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF
-# define FT_PRINTF
+#ifndef FT_PRINTF_H
+# define FT_PRINTF_H
 
 # include "libft/libft.h"
 # include <stdarg.h>
+# include <stdlib.h>
 
-
-int		ft_printf(const char *, ...);
 
 /**
- * @brief return a (char *) where the number 'n' are traducted in the base 'base'
+ * @brief print character in the str
  * 
- * @param n A integer 
- * @param base A base like 2, 8, 10 or 16
- * @return char* who contain 'n' in base 'base'
+ * @param str an 'char *' when we have '%' the next charactere call the other params
+ * @param ... number of variables that vary
+ * @return int the numbers of the character who are print
  */
-char	*ft_nbr_base(int	n, char	*base);
+int		ft_printf(const char *str, ...);
 
-# endif
+/**
+ * @brief print the number 'n' traducted in the base 'base'
+ * 
+ * @param n A integer
+ * @param base A base like 2, 8, 10 or 16
+ * @param len the size of the number who will printed be the fonction
+ * @return the size of the number after the conversion
+ */
+char	*ft_nbr_base(int n, char	*base);
+
+/**
+ * @brief return the address of a pointer
+ * 
+ * @param ptr a pointer
+ * @return char* who contain pointer's address
+ */
+char	*ft_ptr_address(void	*ptr);
+
+#endif
