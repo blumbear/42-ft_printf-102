@@ -6,7 +6,7 @@
 #    By: ttaquet <ttaquet@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/16 16:02:49 by ttaquet           #+#    #+#              #
-#    Updated: 2023/10/26 14:31:56 by ttaquet          ###   ########.fr        #
+#    Updated: 2023/11/18 15:58:03 by ttaquet          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,11 +14,10 @@ NAME = libftprintf.a
 
 CC = cc
 RM = rm -rf
-CFLAGS = -Wall -Wextra -Werror -Iinclude -Ilibft
+CFLAGS = -Wall -Wextra -Werror -Iinclude -Ilibft -g
 
 SRCS = ft_printf.c \
 	ft_nbr.c \
-	libft/ft_putnbr_fd.c \
 	libft/ft_putstr_fd.c \
 	libft/ft_putchar_fd.c \
 	libft/ft_strlen.c \

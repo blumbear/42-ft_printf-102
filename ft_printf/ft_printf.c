@@ -6,47 +6,46 @@
 /*   By: ttaquet <ttaquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 11:48:16 by ttaquet           #+#    #+#             */
-/*   Updated: 2023/10/26 18:04:40 by ttaquet          ###   ########.fr       */
+/*   Updated: 2023/11/20 16:36:07 by ttaquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	print_args(char *str, char c )
+int	ft_print_char(char c)
 {
-	int	tmp;
-
-	tmp = ft_strlen(str);
-	ft_putstr_fd(str, 1);
-	if (c != 's')
-		free(str);
-	return (tmp);
+	write(1, &c, 1);
+	return (1);
 }
 
-int	print_char(char c)
+int	ft_print_args(char *str)
 {
-	ft_putchar_fd(c, 1);
-	return (1);
+	if (str == NULL)
+		str = "(null)";
+	ft_putstr_fd(str, 1);
+	return (ft_strlen(str));
 }
 
 int	get_args(va_list args, char c)
 {
 	if (c == 'c')
-		return (print_char(va_arg(args, int)));
+		return (ft_print_char(va_arg(args, int)));
 	else if (c == 's')
-		return (print_args(va_arg(args, char *), c));
+		return (ft_print_args(va_arg(args, char *)));
 	else if (c == 'p')
-		return (print_args(ft_ptr_address(va_arg(args, void *)), c));
-	else if (c == 'd' || c == 'i' || c == 'u')
-		return (print_args(ft_nbr_base(va_arg(args, int), "0123456789"), c));
+		return (ft_print_ptr(va_arg(args, void *)));
+	else if (c == 'd' || c == 'i')
+		return (ft_printnbr(va_arg(args, int)));
+	else if (c == 'u')
+		return (ft_printnbr_base(va_arg(args, unsigned int), "0123456789"));
 	else if (c == 'x')
-		return (print_args(ft_nbr_base(va_arg(args, int),
-					"0123456789abcdef"), c));
+		return (ft_printnbr_base(va_arg(args, unsigned int),
+				"0123456789abcdef"));
 	else if (c == 'X')
-		return (print_args(ft_nbr_base(va_arg(args, int),
-					"0123456789ABCEDF"), c));
+		return (ft_printnbr_base(va_arg(args, unsigned int),
+				"0123456789ABCDEF"));
 	else if (c == '%')
-		return (print_char(c));
+		return (ft_print_char(c));
 	return (0);
 }
 
@@ -66,17 +65,11 @@ int	ft_printf(const char *str, ...)
 			len += get_args(args, str[i + 1]);
 			i += 2;
 		}
-		if (str[i])
+		else
 		{
-			ft_putchar_fd(str[i], 1);
+			ft_putchar_fd(str[i++], 1);
 			len++;
-			i++;
 		}
 	}
 	return (len);
 }
-// int main(){
-// // printf("size -> %d\n",ft_printf(" NULL %s NULL ", NULL));
-// printf("--------------\n");
-// printf("size -> %d",printf(" NULL %s NULL ", NULL));
-// }

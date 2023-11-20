@@ -6,71 +6,75 @@
 /*   By: ttaquet <ttaquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 14:00:12 by ttaquet           #+#    #+#             */
-/*   Updated: 2023/10/26 17:49:51 by ttaquet          ###   ########.fr       */
+/*   Updated: 2023/11/20 16:39:30 by ttaquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_num_size(int n, char	*base)
+void	ft_putnbr(signed int n)
 {
-	int	i;
+	int	sign;
 
-	i = 0;
-	while (n > 0)
+	sign = n > 0;
+	if (n == -2147483648)
+		ft_putstr_fd("-2147483648", 1);
+	else if (n < 0)
 	{
-		n /= ft_strlen(base);
+		ft_putchar_fd('-', 1);
+		ft_putnbr(-n);
+	}
+	else if (n >= 10)
+	{
+		ft_putnbr(n / 10);
+		ft_putnbr(n % 10);
+	}
+	else
+		ft_putchar_fd(n % 10 + '0', 1);
+}
+
+int	ft_printnbr(int n)
+{
+	int			i;
+	long int	num;
+
+	i = (n < 0) + 1;
+	ft_putnbr(n);
+	num = (long int)n;
+	num *= (((n > 0) * 2) - 1);
+	while (num >= 10)
+	{
+		num /= 10;
 		i++;
 	}
 	return (i);
 }
 
-char	*ft_nbr_base(int n, char	*base)
+static void	ft_putnbr_base(size_t n, char *base)
 {
-	int		sign;
-	int		len;
-	char	*res;
-
-	sign = (n < 0);
-	n *= (((n > 0) * 2) - 1);
-	len = sign + ft_num_size(n, base);
-	res = (char *)malloc(sizeof(char) * (len + 1));
-	if (!res)
-		return (NULL);
-	res[len--] = '\0';
-	while ((size_t)n > ft_strlen(base))
-	{
-		res[len--] = base[n % ft_strlen(base)];
-		n /= ft_strlen(base);
-	}
-	res[len--] = base[n % ft_strlen(base)];
-	if (sign)
-		res[len] = '-';
-	return (res);
+	if (n >= ft_strlen(base))
+		ft_putnbr_base(n / ft_strlen(base), base);
+	ft_putchar_fd(base[n % ft_strlen(base)], 1);
 }
 
-char	*ft_ptr_address(void	*ptr)
+int	ft_printnbr_base(size_t n, char	*base)
 {
-	long long int	address;
-	char			*addresshex;
-	int				i;
-	int				valeur;
+	int	i;
 
-	address = (long long int)ptr;
-	valeur = 0;
 	i = 0;
-	addresshex = malloc(sizeof(char) * 18);
-	while (i < 16)
+	ft_putnbr_base(n, base);
+	while (n >= ft_strlen(base))
 	{
-		valeur = address % 16;
-		if (valeur < 10)
-			addresshex[13 - i] = (char)(valeur + '0');
-		else
-			addresshex[13 - i] = (char)(valeur - 10 + 'a');
-		address /= 16;
+		n /= ft_strlen(base);
 		i++;
 	}
-	addresshex[0] = '0';
-	addresshex[1] = 'x';
-	return (addresshex);
+	return (i + 1);
+}
+
+int	ft_print_ptr(void	*ptr)
+{
+	if (ptr == NULL)
+		return (write(1, "(nil)", 5));
+	ft_putstr_fd("0x", 1);
+	return (2 + ft_printnbr_base (*(size_t *)& ptr, "0123456789abcdef"));
 }
